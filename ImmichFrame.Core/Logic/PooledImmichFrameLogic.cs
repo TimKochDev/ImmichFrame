@@ -62,6 +62,10 @@ public class PooledImmichFrameLogic : IAccountImmichFrameLogic, IDisposable
         if (hasTags)
             pools.Add(new TagAssetsPool(_apiCache, _immichApi, accountSettings));
 
+        // Preserve album cycle boundaries instead of 25 independent single-photo requests.
+        if (pools.Count == 1 && pools[0] is AlbumAssetsPool)
+            return pools[0];
+
         return new MultiAssetPool(pools);
     }
 
