@@ -13,12 +13,12 @@ public abstract class CachingApiAssetsPool(IApiCache apiCache, ImmichApi immichA
         return (await AllAssets(ct)).Count();
     }
 
-    public async Task<IEnumerable<AssetResponseDto>> GetAssets(int requested, CancellationToken ct = default)
+    public virtual async Task<IEnumerable<AssetResponseDto>> GetAssets(int requested, CancellationToken ct = default)
     {
         return (await AllAssets(ct)).OrderBy(_ => _random.Next()).Take(requested);
     }
 
-    private async Task<IEnumerable<AssetResponseDto>> AllAssets(CancellationToken ct = default)
+    protected async Task<IEnumerable<AssetResponseDto>> AllAssets(CancellationToken ct = default)
     {
         var excludedAlbumAssets = await apiCache.GetOrAddAsync($"{GetType().FullName}_ExcludedAlbums", () => AssetHelper.GetExcludedAlbumAssets(immichApi, accountSettings));
 
